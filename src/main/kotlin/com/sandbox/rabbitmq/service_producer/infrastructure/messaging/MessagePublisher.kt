@@ -12,8 +12,13 @@ class MessagePublisher(
     private val fanout: FanoutExchange,
 ) : Publisher<MessageEvent> {
     override fun publish(event: MessageEvent) {
-        println("Publishing message: ${event.message.value}")
-        send(event.message.value)
+        println("Publishing event: $event")
+        send(event)
+    }
+
+    private fun send(event: MessageEvent) {
+        template.convertAndSend(fanout.name, "", event)
+        println(" [x] Sent '$event'")
     }
 
     private fun send(message: String) {
